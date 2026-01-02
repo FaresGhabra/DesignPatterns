@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Models;
 
@@ -11,11 +11,13 @@ use App\States\Account\ClosedState;
 use App\States\Account\FrozenState;
 use App\States\Account\SuspendedState;
 use InvalidArgumentException;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Account extends Model
 {
-    use HasFactory, SoftDeletes;
-
+    use HasFactory, SoftDeletes, QueryCacheable;
+    public $cacheFor = 21600; // For 6 hours
+    protected static $flushCacheOnUpdate = true;
     protected $fillable = [
         'user_id',
         'parent_id',
@@ -56,7 +58,7 @@ class Account extends Model
     {
         // Add validation logic here if needed (e.g., cannot go from 'closed' to 'active')
         if ($this->status === 'closed') {
-             throw new \Exception("Cannot reopen a closed account.");
+            throw new \Exception("Cannot reopen a closed account.");
         }
 
         $this->status = $newStatus;

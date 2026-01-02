@@ -5,11 +5,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
-
+    use HasApiTokens, HasFactory, Notifiable, QueryCacheable;
+    public $cacheFor = 21600; // For 6 hours
+    protected static $flushCacheOnUpdate = true;
     protected $fillable = [
         'name',
         'email',

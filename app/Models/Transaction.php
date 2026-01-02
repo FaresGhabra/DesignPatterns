@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Transaction extends Model
 {
-    use HasFactory;
-
+    use HasFactory, QueryCacheable;
+    public $cacheFor = 21600; // For 6 hours
+    protected static $flushCacheOnUpdate = true;
     protected $fillable = [
         'uuid',
         'from_account_id',
