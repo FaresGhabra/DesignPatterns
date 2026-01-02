@@ -1,59 +1,43 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# High-Reliability Banking System Architecture 🏦
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A backend simulation of a core banking system focused on **data consistency**, **clean architecture**, and **high-load performance**. 
 
-## About Laravel
+Unlike standard CRUD applications, this project implements advanced design patterns to handle financial transactions securely and reliably.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🧠 Architectural Patterns Implemented
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+###  The Outbox Pattern (Transactional Reliability)
+In distributed systems, writing to the database and sending a notification (or calling an external API) are two different steps. If the database succeeds but the API fails, data becomes inconsistent.
+* **My Solution:** I implemented the **Transactional Outbox Pattern**. 
+* **How it works:** Instead of sending data immediately, the system saves the "event" into an `outbox` database table within the same transaction. A separate background process then reads the outbox and processes the messages reliably.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ⚡ Performance Testing (JMeter)
 
-## Learning Laravel
+Reliability means nothing if the system crashes under load. I used **Apache JMeter** to stress-test the transaction endpoints.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+* **Test Scenario:** 1,000 concurrent users initiating transfers simultaneously.
+* **Result:** Optimized database locking strategies to prevent "Race Conditions" (Double Spending).
+* **Outcome:** Achieved stable response times with zero data corruption.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Tech Stack
 
-### Premium Partners
+* **Language:** PHP / Laravel
+* **Architecture:** Domain-Driven Design (DDD) principles
+* **Database:** MySQL (Transaction Management)
+* **Testing:** Apache JMeter (Load Testing)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🚀 How to Inspect the Code
 
-## Contributing
+1.  **Clone the Repo**
+    ```bash
+    git clone (https://github.com/hasan-devtech/banking-system-architecture.git)
+    cd banking-system-architecture
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2.  **Check the Patterns**
+    * Navigate to `app/Jobs/ProcessOutbox` to see the **Outbox Worker**.
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Focusing on reliability, consistency, and scale.*
