@@ -16,11 +16,12 @@ Route::get('/user', function (Request $request) {
 
 
 // --- Public Routes ---
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware(['throttle:authentication']);
+Route::post('/login', [AuthController::class, 'login'])->middleware(['throttle:authentication']);
+
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:general'])->group(function () {
     Route::get('/accounts', [AccountController::class, 'index']);
     Route::post('/accounts', [AccountController::class, 'store']);
     Route::get('/accounts/{id}', [AccountController::class, 'show']);
@@ -30,14 +31,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
     Route::post('/accounts/{id}/change-request', [AccountChangeController::class, 'store']);
-    
+
 });
 
-Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
-    
+Route::middleware(['auth:sanctum', 'role:admin', 'throttle:general'])->prefix('admin')->group(function () {
+
     // View Pending
     Route::get('/transactions/pending', [AdminTransactionController::class, 'index']);
-    
+
     // Actions
     Route::post('/transactions/{id}/approve', [AdminTransactionController::class, 'approve']);
     Route::post('/transactions/{id}/reject', [AdminTransactionController::class, 'reject']);
